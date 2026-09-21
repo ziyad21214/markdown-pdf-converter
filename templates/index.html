@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD to PDF Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>
+                <i class="fas fa-file-pdf" style="color: #e74c3c;"></i>
+                MD to PDF Converter
+            </h1>
+            
+            <p class="description">
+                Convert your markdown files to PDF instantly. 
+                Simple, fast, and free.
+            </p>
+            
+            <!-- Error Message -->
+            {% if error %}
+            <div class="error show">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+            </div>
+            {% endif %}
+            
+            <!-- Success Message -->
+            {% if pdf_filename %}
+            <div class="success-message show">
+                <i class="fas fa-check-circle"></i> File converted successfully!
+            </div>
+            {% endif %}
+            
+            <!-- Upload Form (Always shown) -->
+            <form method="POST" enctype="multipart/form-data" id="uploadForm" action="{{ url_for('convert_to_pdf') }}">
+                <!-- Upload Area -->
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <p class="upload-text">Click to select or drag & drop</p>
+                    <p class="upload-hint">Supports .md, .markdown, .txt files</p>
+                </div>
+                
+                <!-- File Input (Hidden) -->
+                <input type="file" name="markdown_file" id="fileInput" 
+                       accept=".md,.markdown,.txt" 
+                       style="display: none;"
+                       onchange="showFileInfo()">
+                
+                <!-- File Info (Initially Hidden) -->
+                <div id="fileInfo" class="file-info">
+                    <div class="file-name" id="fileName"></div>
+                    <div class="file-size" id="fileSize"></div>
+                </div>
+                
+                <!-- Convert Button -->
+                <div style="margin-top: 20px;">
+                    <button type="submit" id="convertBtn" class="btn" disabled>
+                        <i class="fas fa-bolt"></i> Convert to PDF
+                    </button>
+                    
+                    {% if pdf_filename %}
+                    <a href="/reset" class="btn btn-secondary" style="margin-left: 10px;">
+                        <i class="fas fa-sync-alt"></i> New File
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
+            
+            <!-- Result Section (Shows after conversion) -->
+            {% if pdf_filename %}
+            <div class="result-section show">
+                <div class="result-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h3>Your PDF is Ready!</h3>
+                
+                <div class="file-info show" style="text-align: center;">
+                    <div class="file-name">
+                        <i class="fas fa-file-pdf"></i>
+                        {% if original_filename %}
+                        {{ original_filename|replace('.md', '.pdf')|replace('.markdown', '.pdf')|replace('.txt', '.pdf') }}
+                        {% else %}
+                        document.pdf
+                        {% endif %}
+                    </div>
+                    <div class="file-size">
+                        Ready to download
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="/download" class="btn btn-success">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                    
+                    <a href="/reset" class="btn btn-secondary">
+                        <i class="fas fa-file-upload"></i> Convert Another
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Features -->
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <p>Fast conversion</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <p>Secure & private</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-mobile-alt"></i>
+                    <p>Mobile friendly</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</html>

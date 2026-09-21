@@ -1,0 +1,10 @@
+from flask import Flask
+from app import create_app
+from config import Config
+import os
+
+if __name__ == '__main__':
+    app: Flask = create_app(Config)
+    app.run(host='0.0.0.0',
+            port=int(os.environ.get('PORT', 5000)),
+            debug=False)
